@@ -10,30 +10,30 @@ describe FileReview do
   end
 
   describe "#completed?" do
-    it "returns true where completed_at is set" do
-      file_review = FileReview.new(completed_at: Time.now)
+    it "returns true when completed_at is set" do
+      file_review = FileReview.new(completed_at: Time.zone.now)
 
-      expect(file_review.completed?).to eq true
+      expect(file_review).to be_completed
     end
 
-    it "returns false where completed_at is nil" do
+    it "returns false when completed_at is nil" do
       file_review = FileReview.new
 
-      expect(file_review.completed?).to eq false
+      expect(file_review).not_to be_completed
     end
   end
 
   describe "#running?" do
-    it "returns true where complete_at is nil" do
-      file_review = FileReview.new(completed_at: Time.now)
+    it "returns true when complete_at is set" do
+      file_review = FileReview.new(completed_at: Time.zone.now)
 
-      expect(file_review.running?).to eq false
+      expect(file_review).not_to be_running
     end
 
-    it "returns false where completed_at is set" do
+    it "returns false when completed_at is nil" do
       file_review = FileReview.new(completed_at: nil)
 
-      expect(file_review.running?).to eq true
+      expect(file_review).to be_running
     end
   end
 end

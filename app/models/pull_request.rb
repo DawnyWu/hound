@@ -1,14 +1,15 @@
 class PullRequest
   pattr_initialize :payload, :token
 
+  FILE_ADDED_STATUS = "added"
+  FILE_REMOVED_STATUS = "removed"
+
   def comments
     @comments ||= user_github.pull_request_comments(full_repo_name, number)
   end
 
   def pull_request_files
-    @pull_request_files ||= user_github.
-      pull_request_files(full_repo_name, number).
-      map { |file| build_commit_file(file) }
+    @pull_request_files ||= current_pull_request_files
   end
 
   def comment_on_violation(violation)
@@ -41,6 +42,13 @@ class PullRequest
 
   def build_commit_file(file)
     CommitFile.new(file, head_commit)
+  end
+
+  def current_pull_request_files
+    user_github.
+      pull_request_files(full_repo_name, number).
+      reject { |file| file.status == FILE_REMOVED_STATUS }.
+      map { |file| build_commit_file(file) }
   end
 
   def user_github

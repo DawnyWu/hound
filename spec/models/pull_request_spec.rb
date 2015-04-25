@@ -82,22 +82,19 @@ describe PullRequest do
 
   describe "#pull_request_files" do
     it "does not include removed files" do
-      added_file = double(
-        filename: "foo.rb",
-        status: PullRequest::FILE_ADDED_STATUS,
-      )
-      removed_file = double(
-        filename: "bar.rb",
-        status: PullRequest::FILE_REMOVED_STATUS,
-      )
-      all_pull_request_files = [added_file, removed_file]
+      added_file = double(filename: "foo.rb", status: "added")
+      modified_file = double(filename: "baz.rb", status: "modified")
+      removed_file = double(filename: "bar.rb", status: "removed")
+      all_pull_request_files = [added_file, removed_file, modified_file]
       github = double(:github, pull_request_files: all_pull_request_files)
       pull_request = pull_request_stub(github)
 
       files = pull_request.pull_request_files
+      file_names = files.map(&:filename)
 
-      expect(files.size).to eq 1
-      expect(files.first.filename).to eq added_file.filename
+      expect(file_names).to match_array(
+        [added_file.filename, modified_file.filename]
+      )
     end
   end
 

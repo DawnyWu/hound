@@ -1,7 +1,6 @@
 class PullRequest
   pattr_initialize :payload, :token
 
-  FILE_ADDED_STATUS = "added"
   FILE_REMOVED_STATUS = "removed"
 
   def comments

@@ -8,7 +8,7 @@ class PullRequest
   end
 
   def pull_request_files
-    @pull_request_files ||= current_pull_request_files
+    @pull_request_files ||= changed_pull_request_files
   end
 
   def comment_on_violation(violation)
@@ -43,7 +43,7 @@ class PullRequest
     CommitFile.new(file, head_commit)
   end
 
-  def current_pull_request_files
+  def changed_pull_request_files
     user_github.
       pull_request_files(full_repo_name, number).
       reject { |file| file.status == FILE_REMOVED_STATUS }.
